@@ -1,0 +1,13 @@
+Trades,Header,DataDiscriminator,Asset Category,Currency,Symbol,Date/Time,Quantity,T. Price,C. Price,Proceeds,Comm/Fee,Basis,Realized P/L,MTM P/L,Code
+Trades,Data,Order,Stocks,USD,AAPL,2025-01-06 10:02:10,40,182.15,182.15,-7286.00,-1.10,0,0,0,O
+Trades,Data,Order,Stocks,USD,MSFT,2025-01-07 11:16:45,20,392.44,392.44,-7848.80,-1.05,0,0,0,O
+Trades,Data,Order,Stocks,USD,NVDA,2025-01-09 09:42:11,10,612.30,612.30,-6123.00,-1.28,0,0,0,O
+Trades,Data,Order,Stocks,USD,AMZN,2025-01-10 14:05:33,25,168.12,168.12,-4203.00,-0.90,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAPL,2025-01-14 13:10:09,-20,188.55,188.55,3771.00,-1.02,3643.00,126.98,0,O
+Trades,Data,Order,Stocks,USD,MSFT,2025-01-16 10:28:41,-10,401.66,401.66,4016.60,-1.08,3924.40,91.12,0,O
+Trades,Data,Order,Stocks,USD,JPM,2025-01-17 12:44:54,30,176.90,176.90,-5307.00,-0.95,0,0,0,O
+Trades,Data,Order,Stocks,USD,NVDA,2025-01-22 15:01:27,-5,635.40,635.40,3177.00,-1.31,3061.50,114.19,0,O
+Trades,Data,Order,Stocks,USD,GOOGL,2025-01-24 09:51:10,20,146.85,146.85,-2937.00,-0.88,0,0,0,O
+Trades,Data,Order,Stocks,USD,AMZN,2025-01-29 11:36:02,-10,171.25,171.25,1712.50,-0.92,1681.20,30.38,0,O
+Trades,Data,Order,Stocks,USD,GOOGL,2025-02-03 13:07:45,-10,151.90,151.90,1519.00,-0.84,1468.50,49.66,0,O
+Trades,Data,Order,Stocks,USD,JPM,2025-02-04 10:19:33,-15,181.20,181.20,2718.00,-0.86,2653.50,63.64,0,O

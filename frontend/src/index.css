@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-gray-50 text-gray-900 antialiased font-sans;
+}
+
+/* Reusable card shell */
+.card {
+  @apply bg-white rounded-xl border border-gray-200 shadow-sm;
+}
+
+/* Light scrollbar inside tables/heatmaps */
+.thin-scroll::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+/* Markdown prose tweaks */
+.prose p {
+  @apply leading-relaxed;
+}
+
+/* Safety net: hide stale empty markdown cards from cached bundles */
+.card.prose:empty {
+  display: none;
+}

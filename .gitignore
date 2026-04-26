@@ -1,0 +1,89 @@
+# =====================================================
+# PortfolioLens .gitignore
+# =====================================================
+
+# --- Secrets / env (NEVER commit) ---
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env
+frontend/.env.local
+
+# --- Python (backend) ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual envs
+.venv/
+venv/
+ENV/
+env/
+backend/.venv/
+backend/venv/
+
+# Packaging / build
+*.egg
+*.egg-info/
+build/
+dist/
+backend/dist/
+backend/build/
+
+# Test / type / lint caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyright/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+.tox/
+.nox/
+
+# --- Databases ---
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+backend/portfoliolens.db
+backend/portfoliolens.db-shm
+backend/portfoliolens.db-wal
+
+# --- Runtime / temp / debug ---
+tmp/
+backend/tmp/
+*.log
+logs/
+
+# --- Node / frontend ---
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/coverage/
+.vite/
+*.tsbuildinfo
+frontend/tsconfig.tsbuildinfo
+
+# --- IDE / editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Misc ---
+*.bak
+*.orig
