@@ -42,10 +42,15 @@ export default function UploadPage() {
       const previous = await upload.mutateAsync({
         file: previousFile,
       });
-      await analyzePortfolio(previous.portfolio_id);
+      // Kick off analytics for both portfolios so the Progress tab has data.
+      await Promise.all([
+        analyzePortfolio(previous.portfolio_id),
+        analyzePortfolio(current.portfolio_id),
+      ]);
       navigate(`/portfolio/${current.portfolio_id}?previous=${previous.portfolio_id}`);
       return;
     }
+    await analyzePortfolio(current.portfolio_id);
     navigate(`/portfolio/${current.portfolio_id}`);
   };
 

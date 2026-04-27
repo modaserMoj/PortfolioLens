@@ -21,7 +21,8 @@ export function useAnalytics(id: string) {
   return useQuery({
     queryKey: ['analytics', id],
     queryFn: () => api.getAnalytics(id),
-    retry: false,
+    retry: 30,
+    retryDelay: 2000,
     enabled: Boolean(id),
   });
 }

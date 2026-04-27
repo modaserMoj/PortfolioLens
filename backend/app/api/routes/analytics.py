@@ -1,10 +1,12 @@
+import asyncio
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.database import get_db
+from app.core.database import async_session, get_db
+from app.core.logging import get_logger
 from app.models.analysis import AnalyticsResult
 from app.models.portfolio import Portfolio
 from app.schemas.analytics import (
@@ -22,6 +24,31 @@ from app.services.pipeline import run_analytics_pipeline
 
 
 router = APIRouter()
+logger = get_logger(__name__)
+_analysis_jobs: set[str] = set()
+_analysis_lock = asyncio.Lock()
+
+
+async def _run_analysis_detached(portfolio_id: UUID) -> None:
+    key = str(portfolio_id)
+    try:
+        async with async_session() as db:
+            await run_analytics_pipeline(portfolio_id, db)
+    except Exception:  # noqa: BLE001
+        logger.exception("Detached analysis failed for portfolio %s", key)
+    finally:
+        async with _analysis_lock:
+            _analysis_jobs.discard(key)
+
+
+async def _ensure_analysis_started(portfolio_id: UUID) -> bool:
+    key = str(portfolio_id)
+    async with _analysis_lock:
+        if key in _analysis_jobs:
+            return False
+        _analysis_jobs.add(key)
+    asyncio.create_task(_run_analysis_detached(portfolio_id))
+    return True
 
 
 def _metric_delta(previous: float, current: float, better_when_lower: bool) -> MetricDelta:
@@ -89,8 +116,11 @@ async def analyze_portfolio(portfolio_id: UUID, db: AsyncSession = Depends(get_d
     if not portfolio:
         raise HTTPException(status_code=404, detail="Portfolio not found")
 
-    await run_analytics_pipeline(portfolio_id, db)
-    return AnalyzeResponse(status="complete", portfolio_id=str(portfolio_id))
+    started = await _ensure_analysis_started(portfolio_id)
+    return AnalyzeResponse(
+        status="queued" if started else "already_running",
+        portfolio_id=str(portfolio_id),
+    )
 
 
 @router.get(
@@ -104,10 +134,27 @@ async def get_analytics(portfolio_id: UUID, db: AsyncSession = Depends(get_db)):
     rows = {r.analysis_type: r.result_data for r in res.scalars().all()}
 
     if not rows:
-        raise HTTPException(
-            status_code=404,
-            detail="No analytics found. Run POST /analyze first.",
-        )
+        started = await _ensure_analysis_started(portfolio_id)
+        # Give the pipeline a short chance to finish so the first dashboard load
+        # is more likely to return real analytics instead of a transient 404.
+        for _ in range(25):
+            await asyncio.sleep(1)
+            rerun = await db.execute(
+                select(AnalyticsResult).where(AnalyticsResult.portfolio_id == portfolio_id)
+            )
+            rows = {r.analysis_type: r.result_data for r in rerun.scalars().all()}
+            if rows:
+                break
+
+        if not rows:
+            raise HTTPException(
+                status_code=404,
+                detail=(
+                    "Analysis started. Retry shortly."
+                    if started
+                    else "Analysis in progress. Retry shortly."
+                ),
+            )
 
     return FullAnalyticsResponse(
         performance=PerformanceMetrics(**(rows.get("performance") or {})),

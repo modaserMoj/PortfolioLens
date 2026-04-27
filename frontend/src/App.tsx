@@ -23,7 +23,7 @@ export default function App() {
         </Routes>
       </main>
       <footer className="py-4 text-center text-xs text-gray-400">
-        PortfolioLens · local development build
+        PortfolioLens
       </footer>
     </div>
   );
